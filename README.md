@@ -2,13 +2,13 @@
 
 A Flutter plugin for provisioning ESP32 modules with SoftAP
 
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/omert08/esp_provisioning_softap_null_safe/releases)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/omert08/esp_provisioning_softap_null_safe/blob/main/LICENSE)
-[![pub points](https://badges.bar/sentry/pub%20points)](https://pub.dev/packages/esp_provisioning_softap_null_safe/score)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/nicop2000/esp_provisioning_softap/releases)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/nicop2000/esp_provisioning_softap/blob/main/LICENSE)
+<!--[![pub points](https://badges.bar/sentry/pub%20points)](https://pub.dev/packages/esp_provisioning_softap/score) -->
 ## Example App
-GIF by original pub-package [esp_provisioning_softap](https://github.com/omert08/esp_provisioning_softap)
+GIF by original pub-package [esp_softap_provisioning](https://github.com/omert08/esp_softap_provisioning)
 
-<img src="https://raw.githubusercontent.com/omert08/esp_provisioning_softap/main/example/esp_softap_example.gif"  width="360"/>
+<img src="https://raw.githubusercontent.com/omert08/esp_softap_provisioning/main/example/esp_softap_example.gif"  width="360"/>
 
 ## Comparison
 
@@ -76,7 +76,7 @@ For iOS, it's recommended to put platform version >= 9.0 , You can edit this var
 Library is ready to use, you can check example app directory for implementation. <b> Notice that Proof of posession (POP) should be matching with ESP's. </b>
 
 ## Credits
-* I updated the code from the pub-package [esp_provisioning_softap](https://github.com/omert08/esp_provisioning_softap) to null safety.
+* I updated the code from the pub-package [esp_softap_provisioning](https://github.com/omert08/esp_softap_provisioning) to null safety.
 
 The original package by Omer Taban referred to:
 * I have referred to sunshine-tech [esp_provisioning](https://github.com/sunshine-tech/esp_provisioning) repository for native cipher code.

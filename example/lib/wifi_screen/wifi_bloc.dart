@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:esp_provisioning_softap/esp_provisioning_softap.dart';
-import 'package:esp_provisioning_softap/src/connection_models.dart';
 import 'package:logger/logger.dart';
 import '../softap_service.dart';
 import './wifi.dart';

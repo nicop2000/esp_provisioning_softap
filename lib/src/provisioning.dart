@@ -42,7 +42,7 @@ class Provisioning {
   }
 
   Future<void> dispose() async {
-    return transport.disconnect();
+    return await transport.disconnect();
   }
 
   Future<List<Map<String, dynamic>>?> startScanWiFi() async {
@@ -74,7 +74,7 @@ class Provisioning {
     payload.cmdScanStart = scanStart;
     var reqData = await security.encrypt(payload.writeToBuffer());
     var respData = await transport.sendReceive('prov-scan', reqData);
-    return startScanResponse(respData);
+    return await startScanResponse(respData);
   }
 
   Future<WiFiScanPayload> scanStatusResponse(Uint8List? data) async {
@@ -99,7 +99,7 @@ class Provisioning {
     print('after sendreceive');
     print('before scanStatusResponse');
 
-    return scanStatusResponse(respData);
+    return await scanStatusResponse(respData);
   }
 
   Future<List<Map<String, dynamic>>> scanResultRequest(
@@ -117,7 +117,7 @@ class Provisioning {
     print('++++ xxxx ++++');
     var respData = await transport.sendReceive('prov-scan', reqData);
     print('++++ yyyyy ++++');
-    return scanResultResponse(respData);
+    return await scanResultResponse(respData);
   }
 
   Future<List<Map<String, dynamic>>> scanResultResponse(Uint8List? data) async {
@@ -237,14 +237,14 @@ class Provisioning {
     );
   }
 
-  Future<Uint8List> sendReceiveCustomData(Uint8List data, {int packageSize = 256}) async {
+  Future<Uint8List> sendReceiveCustomData(Uint8List data, {int packageSize = 256, String endpoint = 'custom-data'}) async {
     var i = data.length;
     var offset = 0;
     List<int> ret = [];
     while (i > 0) {
       var needToSend = data.sublist(offset, i < packageSize ? i : packageSize);
       var encrypted = await security.encrypt(needToSend);
-      var newData = await transport.sendReceive('custom-data', encrypted);
+      var newData = await transport.sendReceive(endpoint, encrypted);
 
       if ((newData?.length ?? 0) > 0 ) {
         var decrypted = await security.decrypt(newData!);
