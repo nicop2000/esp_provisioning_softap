@@ -67,7 +67,7 @@ class TransportHTTP implements Transport {
       _updateCookie(response);
       if (response.statusCode == 200) {
         print('Connection successful');
-        client.close();
+        // client.close();
         final Uint8List body_bytes = response.bodyBytes;
         return body_bytes;
       } else {
