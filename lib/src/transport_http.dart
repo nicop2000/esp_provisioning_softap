@@ -71,11 +71,11 @@ class TransportHTTP implements Transport {
         final Uint8List body_bytes = response.bodyBytes;
         return body_bytes;
       } else {
-        print('Connection failed');
-        throw Future.error(Exception("ESP Device doesn't repond"));
+        print('Connection failed – HTTP-Status ${response.statusCode}');
+        throw Future.error(Exception("ESP Device doesn't repond. HTTP-Status ${response.statusCode}"));
       }
     } catch (e) {
-      throw StateError('StateError in transport_http.dart – Connection error ' + e.toString());
+      throw StateError('StateError in transport_http.dart – Connection error (${e.runtimeType.toString()})' + e.toString());
     }
   }
 }

@@ -9,6 +9,9 @@
       <excludeFolder url="file://$MODULE_DIR$/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esp_provisioning_softap/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esp_provisioning_softap/build" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esp_provisioning_softap/.dart_tool" />
     </content>
     <orderEntry type="jdk" jdkName="azul-15" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
