@@ -57,22 +57,25 @@ class TransportHTTP implements Transport {
               headers: headers,
               body: data)
           .timeout(timeout)
-          .catchError((error) {
-        print(error);
+          .onError((error, stackTrace) {
+        print("onError");
+        print(error.toString());
+        print(stackTrace.toString());
+        return Future.error(error!);
       });
 
-        _updateCookie(response);
-        if (response.statusCode == 200) {
-          print('Connection successful');
-          //client.close();
-          final Uint8List body_bytes = response.bodyBytes;
-          return body_bytes;
-        } else {
-          print('Connection failed');
-          throw Exception("ESP Device doesn't repond");
-        }
+      _updateCookie(response);
+      if (response.statusCode == 200) {
+        print('Connection successful');
+        client.close();
+        final Uint8List body_bytes = response.bodyBytes;
+        return body_bytes;
+      } else {
+        print('Connection failed');
+        throw Future.error(Exception("ESP Device doesn't repond"));
+      }
     } catch (e) {
-      throw StateError('Connection error ' + e.toString());
+      throw StateError('StateError in transport_http.dart – Connection error ' + e.toString());
     }
   }
 }
