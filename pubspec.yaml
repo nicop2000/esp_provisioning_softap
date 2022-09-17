@@ -1,6 +1,6 @@
 name: esp_provisioning_softap
 description: A Flutter plugin for provisioning ESP32 modules with SoftAP
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/nicop2000/esp_provisioning_softap
 
 environment:
