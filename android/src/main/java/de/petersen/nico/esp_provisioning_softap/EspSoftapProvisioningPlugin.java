@@ -27,6 +27,7 @@ public class EspSoftapProvisioningPlugin implements FlutterPlugin, MethodCallHan
   private MethodChannel channel;
   private Cipher cipher;
 
+  @SuppressWarnings("deprecation")
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "esp_provisioning_softap");
@@ -42,6 +43,7 @@ public class EspSoftapProvisioningPlugin implements FlutterPlugin, MethodCallHan
   // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
   // depending on the user's project. onAttachedToEngine or registerWith must both be defined
   // in the same class.
+  @SuppressWarnings("deprecation")
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "esp_provisioning_softap");
     channel.setMethodCallHandler(new EspSoftapProvisioningPlugin());
