@@ -19,6 +19,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /** EspSoftapProvisioningPlugin */
+@SuppressWarnings("deprecation")
 public class EspSoftapProvisioningPlugin implements FlutterPlugin, MethodCallHandler {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
