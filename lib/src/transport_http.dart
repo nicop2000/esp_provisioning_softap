@@ -1,29 +1,33 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'transport.dart';
 import 'dart:io';
-import 'dart:convert' as convert;
+import 'dart:typed_data';
+
+import 'package:esp_provisioning_softap/esp_provisioning_softap.dart';
+import 'package:esp_provisioning_softap/logger.dart';
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 import 'package:string_validator/string_validator.dart';
 
+@immutable
 class TransportHTTP implements Transport {
-  String hostname;
-  Duration timeout;
-  Map<String, String> headers = new Map();
-  var client = http.Client();
+  TransportHTTP({
+    required this.hostname,
+    this.timeout = const Duration(seconds: 10),
+    http.Client? client,
+  })  : assert(
+          isURL(hostname),
+          'hostname is required to be a valid URL',
+        ),
+        client = client ?? http.Client(),
+        headers = {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+          HttpHeaders.acceptHeader: 'text/plain',
+        };
 
-  TransportHTTP(
-      {required this.hostname, this.timeout = const Duration(seconds: 10)}) {
-    if (!isURL(hostname)) {
-      throw FormatException('hostname should be an URL.');
-    }
-
-    headers["Content-type"] = "application/x-www-form-urlencoded";
-    //header["Content-type"] =  "application/json";
-    headers["Accept"] = "text/plain";
-  }
+  final String hostname;
+  final Duration timeout;
+  final Map<String, String> headers;
+  final http.Client client;
 
   @override
   Future<bool> connect() async {
@@ -36,10 +40,10 @@ class TransportHTTP implements Transport {
   }
 
   void _updateCookie(http.Response response) {
-    String? rawCookie = response.headers['set-cookie'];
+    final rawCookie = response.headers[HttpHeaders.setCookieHeader];
     if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      headers['cookie'] =
+      final index = rawCookie.indexOf(';');
+      headers[HttpHeaders.cookieHeader] =
           (index == -1) ? rawCookie : rawCookie.substring(0, index);
     }
   }
@@ -47,35 +51,33 @@ class TransportHTTP implements Transport {
   @override
   Future<Uint8List?> sendReceive(String epName, Uint8List data) async {
     try {
-      print("Connecting to " + hostname + "/" + epName);
+      logger.d('Connecting to $hostname/$epName');
       final response = await client
           .post(
-              Uri.http(
-                hostname,
-                "/" + epName,
-              ),
-              headers: headers,
-              body: data)
-          .timeout(timeout)
-          .onError((error, stackTrace) {
-        print("onError");
-        print(error.toString());
-        print(stackTrace.toString());
-        return Future.error(error!);
-      });
+            Uri.http(
+              hostname,
+              '/$epName',
+            ),
+            headers: headers,
+            body: data,
+          )
+          .timeout(timeout);
 
       _updateCookie(response);
       if (response.statusCode == 200) {
-        print('Connection successful');
-        // client.close();
-        final Uint8List body_bytes = response.bodyBytes;
-        return body_bytes;
+        logger.d('Connection successful');
+        return response.bodyBytes;
       } else {
-        print('Connection failed – HTTP-Status ${response.statusCode}');
-        throw Future.error(Exception("ESP Device doesn't repond. HTTP-Status ${response.statusCode}"));
+        logger.d('Connection failed - HTTP-Status ${response.statusCode}');
+        throw Exception(
+          'ESP Device is not responding. HTTP-Status ${response.statusCode}',
+        );
       }
     } catch (e) {
-      throw StateError('StateError in transport_http.dart – Connection error (${e.runtimeType.toString()})' + e.toString());
+      throw Exception(
+        'Unknown error in transport_http.dart - '
+        'Connection error (${e.runtimeType})$e',
+      );
     }
   }
 }

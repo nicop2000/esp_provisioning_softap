@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 typedef ItemTapCallback = void Function(Map<String, dynamic> item);
 
 void main() {
-  runApp(MaterialApp(home: HomeScreen()));
+  runApp(const MaterialApp(home: HomeScreen()));
 }
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,23 +21,23 @@ class HomeScreen extends StatelessWidget {
           child: MaterialButton(
             color: Colors.lightBlueAccent,
             elevation: 5,
-            padding: EdgeInsets.all(15.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5))),
+            padding: const EdgeInsets.all(15),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5)),),
             onPressed: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => SoftApScreen()));
+                      builder: (BuildContext context) => const SoftApScreen(),),);
             },
             child: Text(
               'Start Provisioning',
               style: Theme.of(context)
                   .textTheme
-                  .headline6
+                  .titleLarge!
                   .copyWith(color: Colors.white),
             ),
           ),
-        ));
+        ),);
   }
 }

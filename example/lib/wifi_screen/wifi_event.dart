@@ -9,9 +9,8 @@ abstract class WifiEvent extends Equatable {
 
 // events for BLE provisioning
 class WifiEventLoadBLE extends WifiEvent {
-  final Map<String, dynamic> selectedDevice;
-
   const WifiEventLoadBLE(this.selectedDevice);
+  final Map<String, dynamic> selectedDevice;
 
   @override
   List<Object> get props => [selectedDevice];
@@ -24,19 +23,20 @@ class WifiEventScanningBLE extends WifiEvent {}
 class WifiEventScannedBLE extends WifiEvent {}
 
 class WifiEventLoadedBLE extends WifiEvent {
+  const WifiEventLoadedBLE({required this.wifiName});
   final String wifiName;
-
-  WifiEventLoadedBLE({this.wifiName});
 
   @override
   List<Object> get props => [wifiName];
 }
 
 class WifiEventStartProvisioningBLE extends WifiEvent {
+  const WifiEventStartProvisioningBLE({
+    required this.ssid,
+    required this.password,
+  });
   final String ssid;
   final String password;
-
-  WifiEventStartProvisioningBLE({this.ssid, this.password});
 
   @override
   List<Object> get props => [ssid, password];
@@ -52,19 +52,17 @@ class WifiEventScanningSoftAP extends WifiEvent {}
 class WifiEventScannedSoftAP extends WifiEvent {}
 
 class WifiEventLoadedSoftAP extends WifiEvent {
+  const WifiEventLoadedSoftAP({this.wifiName});
   final String wifiName;
-
-  WifiEventLoadedSoftAP({this.wifiName});
 
   @override
   List<Object> get props => [wifiName];
 }
 
 class WifiEventStartProvisioningSoftAP extends WifiEvent {
+  const WifiEventStartProvisioningSoftAP({this.ssid, this.password});
   final String ssid;
   final String password;
-
-  WifiEventStartProvisioningSoftAP({this.ssid, this.password});
 
   @override
   List<Object> get props => [ssid, password];
