@@ -6,11 +6,11 @@ class SoftAPService {
 
   Future<Provisioning> startProvisioning(String hostname, String pop) async {
     final prov = Provisioning(
-        transport: TransportHTTP(hostname: hostname), security: Security1(pop: pop),);
-    final success = await prov.establishSession();
-    if (!success) {
-      throw Exception('Error establishSession');
-    }
+      transport: TransportHTTP(hostname: hostname),
+      security: Security1(pop: pop),
+    );
+    await prov.establishSession();
+
     return prov;
   }
 }

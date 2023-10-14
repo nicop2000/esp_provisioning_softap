@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:esp_provisioning_softap_example/wifi_screen/password_form_field.dart';
+import 'package:flutter/material.dart';
 
 class WifiDialog extends StatefulWidget {
   const WifiDialog({
-    super.key,
     required this.wifiName,
     required this.onSubmit,
+    super.key,
   });
 
   final String wifiName;
@@ -53,7 +53,7 @@ class _WifiDialogState extends State<WifiDialog> {
                 ),
                 TextFormField(
                   onSaved: (text) {
-                    ssid = text;
+                    ssid = text ?? '';
                   },
                   initialValue: widget.wifiName,
                   decoration: InputDecoration(
@@ -71,7 +71,7 @@ class _WifiDialogState extends State<WifiDialog> {
                 PasswordFormField(
                   initialValue: password,
                   onSaved: (text) {
-                    password = text;
+                    password = text ?? '';
                   },
                 ),
                 const SizedBox(
@@ -83,8 +83,8 @@ class _WifiDialogState extends State<WifiDialog> {
                   child: MaterialButton(
                     color: Colors.lightBlueAccent,
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        _formKey.currentState.save();
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
                         widget.onSubmit(ssid, password);
                         Navigator.of(context).pop();
                       }

@@ -12,12 +12,12 @@ class WiFiScreenSoftAP extends StatefulWidget {
 }
 
 class _WiFiScreenSoftAPState extends State<WiFiScreenSoftAP> {
-  void _showDialog(Map<String, dynamic> wifi, BuildContext context) {
-    showDialog(
+  Future<void> _showDialog(Map<String, dynamic> wifi, BuildContext context) {
+    return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return WifiDialog(
-          wifiName: wifi['ssid'],
+          wifiName: wifi['ssid']! as String,
           onSubmit: (ssid, password) {
             print('ssid =$ssid, password = $password');
             BlocProvider.of<WiFiBlocSoftAP>(context).add(
@@ -70,7 +70,8 @@ class _WiFiScreenSoftAPState extends State<WiFiScreenSoftAP> {
       ),
     ];
 
-    Expanded wifiList;
+    late Widget wifiList;
+
     if (state is WifiStateLoaded) {
       wifiList = Expanded(
         child: ScanList(
@@ -81,17 +82,21 @@ class _WiFiScreenSoftAPState extends State<WiFiScreenSoftAP> {
         ),
       );
     }
-    var body = Expanded(child: Container());
-    Expanded statusWidget;
+
+    Widget body = Expanded(child: Container());
+
+    Widget? statusWidget;
     if (step < 2) {
       statusWidget = Expanded(child: statusWidget0[step]);
       body = Expanded(
-        child:
-            SpinKitDoubleBounce(color: Theme.of(context).colorScheme.secondary),
+        child: SpinKitDoubleBounce(
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       );
     } else {
       body = wifiList;
     }
+
     return Column(
       children: <Widget>[
         Center(
@@ -153,63 +158,53 @@ class _WiFiScreenSoftAPState extends State<WiFiScreenSoftAP> {
               );
             }
             if (state is WifiStateProvisionedSuccessfully) {
-              return Container(
-                child: Center(
-                  child: MaterialButton(
-                    color: Colors.lightBlueAccent,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Done'),
-                  ),
+              return Center(
+                child: MaterialButton(
+                  color: Colors.lightBlueAccent,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Done'),
                 ),
               );
             }
             if (state is WifiStateProvisioningAuthError) {
-              return Container(
-                child: Center(
-                  child: MaterialButton(
-                    color: Colors.redAccent,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Auth Error'),
-                  ),
+              return Center(
+                child: MaterialButton(
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Auth Error'),
                 ),
               );
             }
             if (state is WifiStateProvisioningNetworkNotFound) {
-              return Container(
-                child: Center(
-                  child: MaterialButton(
-                    color: Colors.redAccent,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Network Not Found'),
-                  ),
+              return Center(
+                child: MaterialButton(
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Network Not Found'),
                 ),
               );
             }
             if (state is WifiStateProvisioningDisconnected) {
-              return Container(
-                child: Center(
-                  child: MaterialButton(
-                    color: Colors.redAccent,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Subol Device Disconnected'),
-                  ),
+              return Center(
+                child: MaterialButton(
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Device Disconnected'),
                 ),
               );
             }
-            return Container(
-              child: Center(
-                child: SpinKitThreeBounce(
-                  color: Theme.of(context).primaryColor,
-                  size: 20,
-                ),
+            return Center(
+              child: SpinKitThreeBounce(
+                color: Theme.of(context).primaryColor,
+                size: 20,
               ),
             );
           },

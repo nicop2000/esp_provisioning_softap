@@ -1,3 +1,12 @@
 {
-  "words": ["bssid", "Cryptor", "proto", "Pubkey", "rssi", "softap", "spinkit"]
+  "words": [
+    "bssid",
+    "Cryptor",
+    "proto",
+    "protocomm",
+    "Pubkey",
+    "rssi",
+    "softap",
+    "spinkit"
+  ]
 }

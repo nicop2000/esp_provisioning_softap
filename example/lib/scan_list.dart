@@ -35,7 +35,7 @@ class ScanList extends StatelessWidget {
         ),
       ),
       title: Text(
-        item['name'] ?? item['ssid'],
+        (item['name'] as String?) ?? (item['ssid']! as String),
         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       ),
       trailing: Text(item['rssi'].toString()),

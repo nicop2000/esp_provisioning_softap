@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class PasswordFormField extends StatefulWidget {
   const PasswordFormField({
-    super.key,
     required this.initialValue,
-    required this.onChanged,
     required this.onSaved,
+    super.key,
+    this.onChanged,
   });
   final String initialValue;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
   final FormFieldSetter<String> onSaved;
 
   @override

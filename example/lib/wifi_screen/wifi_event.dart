@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class WifiEvent extends Equatable {
+sealed class WifiEvent extends Equatable {
   const WifiEvent();
 
   @override
@@ -52,7 +52,7 @@ class WifiEventScanningSoftAP extends WifiEvent {}
 class WifiEventScannedSoftAP extends WifiEvent {}
 
 class WifiEventLoadedSoftAP extends WifiEvent {
-  const WifiEventLoadedSoftAP({this.wifiName});
+  const WifiEventLoadedSoftAP({required this.wifiName});
   final String wifiName;
 
   @override
@@ -60,7 +60,11 @@ class WifiEventLoadedSoftAP extends WifiEvent {
 }
 
 class WifiEventStartProvisioningSoftAP extends WifiEvent {
-  const WifiEventStartProvisioningSoftAP({this.ssid, this.password});
+  const WifiEventStartProvisioningSoftAP({
+    required this.ssid,
+    required this.password,
+  });
+
   final String ssid;
   final String password;
 

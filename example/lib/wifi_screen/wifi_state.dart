@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class WifiState extends Equatable {
+sealed class WifiState extends Equatable {
   const WifiState();
 
   @override

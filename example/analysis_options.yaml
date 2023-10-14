@@ -9,3 +9,4 @@ linter:
     # TODO: Remove once docs are implemented.
     public_member_api_docs: false
     library_private_types_in_public_api: false
+    avoid_print: false
