@@ -50,33 +50,26 @@ class TransportHTTP implements Transport {
 
   @override
   Future<Uint8List?> sendReceive(String epName, Uint8List data) async {
-    try {
-      logger.d('Connecting to $hostname/$epName');
-      final response = await client
-          .post(
-            Uri.http(
-              hostname,
-              '/$epName',
-            ),
-            headers: headers,
-            body: data,
-          )
-          .timeout(timeout);
+    logger.d('Connecting to $hostname/$epName');
+    final response = await client
+        .post(
+          Uri.http(
+            hostname,
+            '/$epName',
+          ),
+          headers: headers,
+          body: data,
+        )
+        .timeout(timeout);
 
-      _updateCookie(response);
-      if (response.statusCode == 200) {
-        logger.d('Connection successful');
-        return response.bodyBytes;
-      } else {
-        logger.d('Connection failed - HTTP-Status ${response.statusCode}');
-        throw Exception(
-          'ESP Device is not responding. HTTP-Status ${response.statusCode}',
-        );
-      }
-    } catch (e) {
+    _updateCookie(response);
+    if (response.statusCode == 200) {
+      logger.d('Connection successful');
+      return response.bodyBytes;
+    } else {
+      logger.d('Connection failed - HTTP-Status ${response.statusCode}');
       throw Exception(
-        'Unknown error in transport_http.dart - '
-        'Connection error (${e.runtimeType})$e',
+        'ESP Device is not responding. HTTP-Status ${response.statusCode}',
       );
     }
   }
