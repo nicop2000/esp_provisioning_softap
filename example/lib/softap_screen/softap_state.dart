@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class SoftApState extends Equatable {
+sealed class SoftApState extends Equatable {
   const SoftApState();
 
   @override

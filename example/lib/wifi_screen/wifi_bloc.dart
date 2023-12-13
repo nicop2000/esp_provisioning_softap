@@ -1,94 +1,99 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:esp_provisioning_softap/esp_provisioning_softap.dart';
+import 'package:esp_provisioning_softap_example/softap_service.dart';
+import 'package:esp_provisioning_softap_example/wifi_screen/wifi.dart';
 import 'package:logger/logger.dart';
-import '../softap_service.dart';
-import './wifi.dart';
-import 'dart:io';
-import 'dart:convert';
 
 class WiFiBlocSoftAP extends Bloc<WifiEvent, WifiState> {
-
-  Provisioning prov;
-  Logger log = Logger(printer: PrettyPrinter());
-  var softApService = SoftAPService();
-
-  WiFiBlocSoftAP() : super(WifiStateLoading());
-
-
-  @override
-  Stream<WifiState> mapEventToState(WifiEvent event) async* {
-    if (event is WifiEventLoadSoftAP) {
-      yield* _mapLoadToState();
-    }
-    else if (event is WifiEventStartProvisioningSoftAP) {
-      yield* _mapProvisioningToState(event);
-    }
+  WiFiBlocSoftAP() : super(WifiStateLoading()) {
+    on<WifiEventLoadSoftAP>(_onLoadSoftAP);
+    on<WifiEventStartProvisioningSoftAP>(_onStartProvisioningSoftAP);
   }
 
-  Stream<WifiState> _mapLoadToState() async*{
-    yield WifiStateConnecting();
+  Provisioning? prov;
+  final log = Logger(printer: PrettyPrinter());
+  final softApService = SoftAPService();
+
+  Future<void> _onLoadSoftAP(
+    WifiEventLoadSoftAP event,
+    Emitter<WifiState> emit,
+  ) async {
+    emit(WifiStateConnecting());
+
+    late final Provisioning prov;
+
+    const pop = 'abcd1234';
+
     try {
-      const String pop = "abcd1234";
-      if (Platform.isIOS)
-        {
-          prov = await softApService.startProvisioning("wifi-prov.local",  pop);
-        }
-      else{
-          prov = await softApService.startProvisioning("192.168.4.1:80", pop);
-        }
-
-    } catch (e) {
-      log.e('Error connecting to device $e');
-      yield WifiStateError('Error connecting to device');
-    }
-    yield WifiStateScanning();
-    try {
-
-
-
-      var listWifi = await prov.startScanWiFi();
-      yield WifiStateLoaded(wifiList: listWifi ?? []);
-      log.v('Wifi $listWifi');
-    } catch (e) {
-      log.e('Error scan WiFi network $e');
-      yield WifiStateError('Error scan WiFi network');
-    }
-  }
-  Stream<WifiState> _mapProvisioningToState(
-      WifiEventStartProvisioningSoftAP event) async* {
-    yield WifiStateProvisioning();
-    List<int> customData = utf8.encode("Some CUSTOM data\0");
-    Uint8List customBytes = Uint8List.fromList(customData);
-    await prov.sendReceiveCustomData(customBytes);
-    await prov?.sendWifiConfig(ssid: event.ssid, password: event.password);
-    await prov?.applyWifiConfig();
-    await Future.delayed(Duration(seconds: 10));
-    var connectionStatus = await prov.getStatus();
-
-    if (connectionStatus.state == WifiConnectionState.Connected) {
-      yield WifiStateProvisionedSuccessfully();
-    }
-    /*else if (connectionStatus.state == 1){
-
-    }*/
-    else if (connectionStatus.state == WifiConnectionState.Disconnected){
-      yield WifiStateProvisioningDisconnected();
-    }
-    else if (connectionStatus.state == WifiConnectionState.ConnectionFailed){
-      if (connectionStatus.failedReason == WifiConnectFailedReason.AuthError){
-        yield WifiStateProvisioningAuthError();
+      if (Platform.isIOS) {
+        prov = await softApService.startProvisioning('wifi-prov.local', pop);
+      } else {
+        prov = await softApService.startProvisioning('192.168.4.1:80', pop);
       }
-      else if (connectionStatus.failedReason == WifiConnectFailedReason.NetworkNotFound){
-        yield WifiStateProvisioningNetworkNotFound();
+    } catch (e, st) {
+      log.e('Error connecting to device $e');
+      emit(const WifiStateError('Error connecting to device'));
+      addError(e, st);
+      return;
+    }
+
+    this.prov = prov;
+
+    emit(WifiStateScanning());
+
+    try {
+      final listWifi = await prov.startScanWiFi();
+      emit(WifiStateLoaded(wifiList: listWifi ?? []));
+      log.t('Wifi $listWifi');
+    } catch (e, st) {
+      log.e('Error scan WiFi network $e');
+      emit(const WifiStateError('Error scan WiFi network'));
+      addError(e, st);
+    }
+  }
+
+  Future<void> _onStartProvisioningSoftAP(
+    WifiEventStartProvisioningSoftAP event,
+    Emitter<WifiState> emit,
+  ) async {
+    if (prov == null) {
+      throw StateError(
+        'Provisioning is not initialized. '
+        'Add event $WifiEventLoadSoftAP to initialize it.',
+      );
+    }
+
+    emit(WifiStateProvisioning());
+    final customData = utf8.encode('Some CUSTOM data0');
+    final customBytes = Uint8List.fromList(customData);
+    await prov!.sendReceiveCustomData(customBytes);
+    await prov!.sendWifiConfig(ssid: event.ssid, password: event.password);
+    await prov!.applyWifiConfig();
+    await Future<void>.delayed(const Duration(seconds: 10));
+    final connectionStatus = await prov!.getStatus();
+
+    if (connectionStatus.state == WifiConnectionState.connected) {
+      emit(WifiStateProvisionedSuccessfully());
+    } else if (connectionStatus.state == WifiConnectionState.disconnected) {
+      emit(WifiStateProvisioningDisconnected());
+    } else if (connectionStatus.state == WifiConnectionState.connectionFailed) {
+      if (connectionStatus.failedReason == WifiConnectFailedReason.authError) {
+        emit(WifiStateProvisioningAuthError());
+      } else if (connectionStatus.failedReason ==
+          WifiConnectFailedReason.networkNotFound) {
+        emit(WifiStateProvisioningNetworkNotFound());
       }
     }
   }
 
   @override
   Future<void> close() {
-    prov?.dispose();
+    prov!.dispose();
     return super.close();
   }
 }

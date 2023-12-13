@@ -7,36 +7,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SoftApScreen extends StatefulWidget {
+  const SoftApScreen({super.key});
+
   @override
   _SoftApScreenState createState() => _SoftApScreenState();
 }
 
 class _SoftApScreenState extends State<SoftApScreen> {
-
-  void _showBottomSheet(BuildContext _context) {
-
-    var bottomSheetController = showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        isScrollControlled: true,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20.0),
-            topRight: const Radius.circular(20.0),
-          ),
+  Future<void> _showBottomSheet(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        builder: (BuildContext context) {
-          return Container(
-            padding: EdgeInsets.only(top: 5.0),
-            height: MediaQuery.of(context).size.height - 50,
-            child: WiFiScreenSoftAP(),
-          );
-        });
-    bottomSheetController.whenComplete(() {
-      // after prov.
-      BlocProvider.of<SoftApBloc>(_context).add(SoftApEventStart());
-    });
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.only(top: 5),
+          height: MediaQuery.of(context).size.height - 50,
+          child: const WiFiScreenSoftAP(),
+        );
+      },
+    );
+
+    if (mounted) {
+      context.read<SoftApBloc>().add(SoftApEventStart());
+    }
   }
 
   @override
@@ -56,39 +57,43 @@ class _SoftApScreenState extends State<SoftApScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(4),
                       width: MediaQuery.of(context).size.width * 0.85,
-                      child:Text('Please connect WiFi to ESP32 AP (PROV_XXX) in "Wi-Fi Settings". Once you complete it please tap on "Ready" button.',
-                      style: TextStyle(fontSize: 18),),
+                      child: const Text(
+                        'Please connect WiFi to ESP32 AP (PROV_XXX) in '
+                        '"Wi-Fi Settings". Once you complete it '
+                        'please tap on "Ready" button.',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
-
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.1,),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.1,
+                    ),
                     MaterialButton(
                       color: Colors.lightBlueAccent,
                       elevation: 5,
-                      padding: EdgeInsets.all(15.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      padding: const EdgeInsets.all(15),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
                       child: Text(
                         'Ready',
                         style: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge!
                             .copyWith(color: Colors.white),
                       ),
-
                       onPressed: () {
                         _showBottomSheet(this.context);
                       },
                     ),
                   ],
-                )
-
+                ),
               );
             }
 
             return Center(
-              child: SpinKitFoldingCube(color: Theme.of(context).textSelectionColor),
+              child: SpinKitFoldingCube(color: Theme.of(context).primaryColor),
             );
           },
         ),

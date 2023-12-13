@@ -1,13 +1,13 @@
 enum WifiConnectionState {
-  Connected,
-  Connecting,
-  Disconnected,
-  ConnectionFailed,
+  connected,
+  connecting,
+  disconnected,
+  connectionFailed,
 }
 
 enum WifiConnectFailedReason {
-  AuthError,
-  NetworkNotFound,
+  authError,
+  networkNotFound,
 }
 
 class ConnectionStatus {

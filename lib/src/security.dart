@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'proto/dart/session.pb.dart';
+import 'package:esp_provisioning_softap/src/proto/dart/session.pb.dart';
 
 // Enum for state of protocomm_security1 FSM
 enum SecurityState {
-  REQUEST1,
-  RESPONSE1_REQUEST2,
-  RESPONSE2,
-  FINISH,
+  request1,
+  response1Request2,
+  response2,
+  finished,
 }
 
 abstract class Security {
